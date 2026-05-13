@@ -187,6 +187,23 @@
   .footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.15s; }
   .footer-links a:hover { color: var(--ink); }
 
+  /* ABOUT */
+  .about-grid {
+    display: grid; grid-template-columns: 160px 1fr;
+    gap: 2.5rem; align-items: center;
+  }
+  .about-img {
+    width: 160px; height: 160px; border-radius: 50%;
+    object-fit: cover; object-position: top;
+    border: 3px solid var(--navy-light);
+    display: block;
+  }
+  .about-text { font-size: 15px; color: var(--muted); line-height: 1.8; }
+  @media (max-width: 600px) {
+    .about-grid { grid-template-columns: 1fr; text-align: center; }
+    .about-img { margin: 0 auto; }
+  }
+
   /* FADE IN */
   .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
   .fade-in.visible { opacity: 1; transform: translateY(0); }
@@ -204,6 +221,7 @@
 <nav>
   <span class="nav-name">[Your Name]</span>
   <div class="nav-links">
+    <a href="#about">about</a>
     <a href="#experience">experience</a>
     <a href="#projects">projects</a>
     <a href="#skills">skills</a>
@@ -229,6 +247,19 @@
       <div><div class="stat-val">4</div><div class="stat-label">projects</div></div>
       <div><div class="stat-val">0.53%</div><div class="stat-label">best MAPE</div></div>
       <div><div class="stat-val">50+</div><div class="stat-label">variables analyzed</div></div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ABOUT -->
+  <section id="about" class="fade-in">
+    <div class="section-label">about</div>
+    <div class="about-grid">
+      <img src="som.jpg" alt="Profile" class="about-img">
+      <p class="about-text">
+        นักศึกษาสถิติปี 3 ที่ชอบแปลงข้อมูลให้เป็นคำตอบทางธุรกิจ มีประสบการณ์ด้าน Machine Learning และ Data Pipeline จากการฝึกงานจริง สนใจงานด้านการเงินและธนาคารเป็นพิเศษ
+      </p>
     </div>
   </section>
 
@@ -345,17 +376,17 @@
   <section id="education" class="fade-in">
     <div class="section-label">education</div>
     <div class="edu-block">
-      <div class="edu-uni">King Mongkut's Institute of Technology Ladkrabang</div>
-      <div class="edu-degree">Bachelor of Science · Applied Statistics and Data Analytics</div>
+      <div class="edu-uni">[University Name]</div>
+      <div class="edu-degree">Bachelor of Science in Statistics · [Faculty Name]</div>
       <div class="edu-meta">
         <div class="edu-meta-item">GPA <strong>3.21</strong></div>
-        <div class="edu-meta-item">Expected <strong>2570</strong></div>
+        <div class="edu-meta-item">Expected <strong>[Month Year]</strong></div>
       </div>
     </div>
   </section>
 
   <footer>
-    <span class="footer-name">Arrrya Chanthanapaiboon · Statistics · King Mongkut's Institute of Technology Ladkrabang</span>
+    <span class="footer-name">[Your Name] · Statistics · [University]</span>
     <div class="footer-links">
       <a href="https://linkedin.com/in/yourname" target="_blank">LinkedIn</a>
       <a href="https://github.com/somsoomsooom" target="_blank">GitHub</a>
