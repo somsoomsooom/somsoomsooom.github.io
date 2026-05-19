@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>พยากรณ์อุณหภูมิกรุงเทพมหานคร</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --accent: #e8a045;
+    --accent2: #c96c3a;
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --border: #30363d;
+    --green: #3fb950;
+    --blue: #58a6ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(232,160,69,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 10% 80%, rgba(201,108,58,0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  header {
+    padding: 5rem 0 3rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid rgba(232,160,69,0.3);
+    padding: 0.3rem 0.8rem;
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 520px;
+  }
+
+  .meta {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .meta-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .meta-value {
+    font-size: 0.9rem;
+    color: var(--text);
+    font-weight: 400;
+  }
+
+  /* Sections */
+  section {
+    margin-bottom: 3.5rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  section:nth-child(2) { animation-delay: 0.1s; }
+  section:nth-child(3) { animation-delay: 0.2s; }
+  section:nth-child(4) { animation-delay: 0.3s; }
+  section:nth-child(5) { animation-delay: 0.4s; }
+  section:nth-child(6) { animation-delay: 0.5s; }
+
+  .section-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    color: #bcc4cd;
+    margin-bottom: 1rem;
+    font-size: 0.97rem;
+  }
+
+  /* Callout box */
+  .callout {
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    padding: 1.2rem 1.5rem;
+    border-radius: 0 6px 6px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+    color: #bcc4cd;
+  }
+
+  /* Model cards */
+  .model-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  @media (max-width: 600px) { .model-grid { grid-template-columns: 1fr; } }
+
+  .model-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color 0.2s;
+  }
+
+  .model-card:hover { border-color: var(--accent); }
+
+  .model-card.winner {
+    border-color: rgba(232,160,69,0.4);
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(232,160,69,0.04) 100%);
+  }
+
+  .model-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .model-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    line-height: 1.5;
+  }
+
+  .winner-badge {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(232,160,69,0.1);
+    border: 1px solid rgba(232,160,69,0.3);
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    margin-bottom: 0.8rem;
+  }
+
+  /* Results table */
+  .results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.92rem;
+  }
+
+  .results-table thead th {
+    text-align: left;
+    padding: 0.7rem 1rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    font-weight: 400;
+  }
+
+  .results-table tbody td {
+    padding: 0.9rem 1rem;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    color: #bcc4cd;
+  }
+
+  .results-table tbody tr:last-child td { border-bottom: none; }
+
+  .results-table tbody tr.highlight td {
+    color: var(--text);
+    background: rgba(232,160,69,0.05);
+  }
+
+  .metric-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--accent);
+  }
+
+  .metric-value.good { color: var(--green); }
+
+  /* SARIMA spec */
+  .sarima-spec {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem 2rem;
+    text-align: center;
+    margin: 1.5rem 0;
+  }
+
+  .sarima-eq {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--text);
+    letter-spacing: 0.02em;
+  }
+
+  .sarima-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.6rem;
+  }
+
+  .param-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .param-item {
+    background: var(--surface2);
+    border-radius: 6px;
+    padding: 0.8rem 1rem;
+    font-size: 0.85rem;
+  }
+
+  .param-name { color: var(--muted); font-size: 0.75rem; margin-bottom: 0.2rem; }
+  .param-val { color: var(--accent); font-family: 'Playfair Display', serif; font-size: 1rem; }
+
+  /* Steps */
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.2rem 0;
+  }
+
+  .step {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .step-text {
+    font-size: 0.94rem;
+    color: #bcc4cd;
+    padding-top: 0.1rem;
+  }
+
+  /* Tags */
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .skill-tag {
+    font-size: 0.78rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 0.3rem 0.8rem;
+    border-radius: 3px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Takeaway */
+  .takeaway {
+    background: linear-gradient(135deg, var(--surface) 0%, rgba(232,160,69,0.06) 100%);
+    border: 1px solid rgba(232,160,69,0.25);
+    border-radius: 8px;
+    padding: 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .takeaway p {
+    font-size: 1.05rem;
+    color: #d0d8e2;
+    font-style: italic;
+    line-height: 1.8;
+  }
+
+  /* Footer */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    margin-top: 2rem;
+    color: var(--muted);
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    animation: fadeUp 0.8s 0.6s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  strong { color: var(--text); font-weight: 500; }
+  code {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85em;
+    background: var(--surface2);
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+    color: var(--accent);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <header>
+    <div class="tag">อนุกรมเวลา · การพยากรณ์ · R</div>
+    <h1>พยากรณ์<em>อุณหภูมิ</em><br>กรุงเทพมหานคร</h1>
+    <p class="subtitle">เปรียบเทียบ Holt-Winters และ SARIMA สำหรับการพยากรณ์อุณหภูมิเฉลี่ยรายเดือน โดยใช้ข้อมูลย้อนหลัง 5 ปี</p>
+    <div class="meta">
+      <div class="meta-item">
+        <span class="meta-label">ชุดข้อมูล</span>
+        <span class="meta-value">กรุงเทพฯ ปี 2020–2024</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">จำนวนข้อมูล</span>
+        <span class="meta-value">60 จุดข้อมูลรายเดือน</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">เครื่องมือ</span>
+        <span class="meta-value">R / RStudio · Excel</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">แบบจำลองที่ดีที่สุด</span>
+        <span class="meta-value">SARIMA(0,1,1)(1,1,0)₁₂</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Overview -->
+  <section>
+    <div class="section-label">ภาพรวม</div>
+    <h2>โปรเจกต์นี้เกี่ยวกับอะไร</h2>
+    <p>
+      โปรเจกต์นี้มุ่งพยากรณ์อุณหภูมิเฉลี่ยรายเดือนของกรุงเทพมหานคร โดยใช้เทคนิคการวิเคราะห์อนุกรมเวลา คำถามหลักคือ ระหว่าง Holt-Winters และ Seasonal ARIMA แบบจำลองไหนจับรูปแบบอุณหภูมิตามฤดูกาลของกรุงเทพฯ ได้แม่นยำกว่ากัน
+    </p>
+    <p>
+      ใช้ข้อมูล 60 เดือน ตั้งแต่ปี 2020 ถึง 2024 สร้างและประเมินทั้งสองแบบจำลองตั้งแต่ต้น ตั้งแต่การทดสอบ Stationarity และวิเคราะห์ ACF/PACF ไปจนถึงการเปรียบเทียบความแม่นยำด้วย MAPE และ RMSE
+    </p>
+    <div class="callout">
+      ข้อมูลอุณหภูมิของกรุงเทพฯ มีรอบฤดูกาลรายปีที่ชัดเจนมาก ทำให้เป็นกรณีศึกษาที่น่าสนใจสำหรับการพยากรณ์แบบ Seasonal — ความท้าทายคือจะดึงรูปแบบนั้นออกมาได้แม่นแค่ไหน โดยไม่ overfitting
+    </div>
+  </section>
+
+  <!-- Methodology -->
+  <section>
+    <div class="section-label">ระเบียบวิธี</div>
+    <h2>แนวทางการทำงาน</h2>
+    <p>ก่อนจะ fit แบบจำลองใดๆ เริ่มจากการสำรวจข้อมูลเพื่อให้เข้าใจโครงสร้างของอนุกรมเวลาก่อน</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>ตรวจสอบ Stationarity</strong> — พล็อตกราฟ Time Series และรัน Augmented Dickey-Fuller Test พบว่าข้อมูลมีความผันผวนตามฤดูกาลที่ชัดเจน คาบ s = 12 เดือน ยืนยันได้ว่าข้อมูลยังไม่เป็น Stationary ตั้งแต่ต้น</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>วิเคราะห์ ACF / PACF</strong> — พบ Autocorrelation นัยสำคัญที่ Lag 12, 14, 16 และ 20 ชี้ชัดว่ามีองค์ประกอบฤดูกาล ซึ่งเป็นตัวกำหนดทิศทางทั้ง Differencing และการเลือกแบบจำลอง</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Seasonal Differencing</strong> — ทำการหาผลต่างทั้งแบบ Non-seasonal (d=1) และ Seasonal (D=1) เพื่อทำให้ข้อมูลนิ่งก่อน fit SARIMA และตรวจสอบ ACF/PACF หลัง Differencing เพื่อยืนยัน Stationarity</div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>สร้างแบบจำลอง</strong> — สร้าง Holt-Winters แบบ Multiplicative ด้วยฟังก์ชัน <code>HoltWinters()</code> ใน R และเลือก SARIMA ด้วย <code>auto.arima()</code> พร้อม Validate ด้วยตนเอง</div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-text"><strong>ประเมินผล</strong> — เปรียบเทียบทั้งสองแบบจำลองด้วย MAPE และ RMSE โดยใช้ R เป็นหลัก เนื่องจาก R ใช้ Maximum Likelihood Estimation ซึ่งแม่นยำกว่าการใช้ Solver ของ Excel สำหรับ SARIMA</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Models -->
+  <section>
+    <div class="section-label">แบบจำลอง</div>
+    <h2>สองแนวทางที่เปรียบเทียบ</h2>
+    <div class="model-grid">
+      <div class="model-card">
+        <div class="model-name">Holt-Winters</div>
+        <div class="model-desc">Exponential Smoothing ที่แยกอนุกรมออกเป็น Level (α), Trend (β) และ Seasonality (γ) เลือกใช้รูปแบบ Multiplicative เนื่องจากความผันแปรตามฤดูกาลของกรุงเทพฯ</div>
+        <div style="font-size:0.82rem; color:var(--muted);">α = 0.616 · β = 0.572 · γ = 0.511</div>
+      </div>
+      <div class="model-card winner">
+        <div class="winner-badge">แบบจำลองที่เลือก</div>
+        <div class="model-name">SARIMA</div>
+        <div class="model-desc">จัดการ Non-stationarity ด้วยการหาผลต่าง และสร้างแบบจำลองรูปแบบ Autocorrelation ผ่านองค์ประกอบ AR และ MA ทั้งแบบ Seasonal และ Non-seasonal</div>
+        <div style="font-size:0.82rem; color:var(--muted);">MA1: −0.715 · SAR1: −0.675</div>
+      </div>
+    </div>
+
+    <p>แบบจำลอง SARIMA สุดท้ายที่เลือกคือ:</p>
+    <div class="sarima-spec">
+      <div class="sarima-eq">SARIMA(0, 1, 1)(1, 1, 0)<sub style="font-size:0.7em">12</sub></div>
+      <div class="sarima-sub">Non-seasonal d=1 · Seasonal D=1 · คาบฤดูกาล s=12</div>
+      <div class="param-grid">
+        <div class="param-item"><div class="param-name">MA1 (θ̂₁) — Non-seasonal</div><div class="param-val">−0.715</div></div>
+        <div class="param-item"><div class="param-name">SAR1 (Φ̂₁) — Seasonal AR</div><div class="param-val">−0.6748</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section>
+    <div class="section-label">ผลลัพธ์</div>
+    <h2>ประสิทธิภาพของแบบจำลอง</h2>
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>แบบจำลอง</th>
+          <th>MAPE</th>
+          <th>RMSE</th>
+          <th>AIC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Holt-Winters</td>
+          <td><span class="metric-value">1.43%</span></td>
+          <td><span class="metric-value">0.611</span></td>
+          <td><span style="color:var(--muted)">—</span></td>
+        </tr>
+        <tr class="highlight">
+          <td><strong>SARIMA(0,1,1)(1,1,0)₁₂</strong> ✦</td>
+          <td><span class="metric-value good">0.53%</span></td>
+          <td><span class="metric-value">0.615</span></td>
+          <td><span class="metric-value">113.14</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      SARIMA ชนะขาดในด้าน MAPE — ลดความคลาดเคลื่อนเฉลี่ยเป็นเปอร์เซ็นต์ได้ถึง 63% เทียบกับ Holt-Winters ส่วน RMSE ของทั้งสองใกล้เคียงกันมาก เพราะทั้งคู่จับขนาดโดยรวมของอุณหภูมิได้ดีพอๆ กัน สิ่งที่ตัดสินคือความสามารถของ SARIMA ในการจับ Timing ของฤดูกาลได้แม่นยำกว่า
+    </p>
+  </section>
+
+  <!-- Key Findings -->
+  <section>
+    <div class="section-label">สิ่งที่ค้นพบ</div>
+    <h2>บทเรียนที่ได้รับ</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-text">อุณหภูมิกรุงเทพฯ มีรอบฤดูกาล 12 เดือนที่สม่ำเสมอมาก เมื่อจัดการกับโครงสร้างนั้นได้อย่างถูกต้อง ความแม่นยำในการพยากรณ์จะดีขึ้นอย่างเห็นได้ชัด</div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-text">Seasonal Differencing คือขั้นตอนที่ส่งผลมากที่สุดขั้นตอนเดียว ถ้าไม่ทำ แบบจำลองจะสับสน แต่พอทำแล้ว Residual กลายเป็น Well-behaved และค่าพยากรณ์แน่นขึ้นมาก</div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-text">Holt-Winters เร็วและเข้าใจง่าย แต่สำหรับข้อมูลที่มีฤดูกาลแรงและมี Non-stationarity การทำ Differencing แบบ Explicit ของ SARIMA ให้ความแม่นยำที่เหนือกว่า</div>
+      </div>
+      <div class="step">
+        <div class="step-num">→</div>
+        <div class="step-text">ความเรียบง่ายของ SARIMA(0,1,1)(1,1,0)₁₂ ที่มีพารามิเตอร์แค่สองตัวนั้น ไม่ใช่ข้อเสีย แต่คือข้อดี แบบจำลองที่เรียบง่ายกว่ามักทำนายได้ดีกว่าเมื่อรูปแบบพื้นฐานของข้อมูลชัดเจนอยู่แล้ว</div>
+      </div>
+    </div>
+
+    <div class="takeaway">
+      <p>"สิ่งที่ตระหนักได้มากที่สุดคือ ก่อนจะเลือกแบบจำลอง ต้องเข้าใจโครงสร้างของข้อมูลให้ลึกก่อน กราฟ ACF/PACF บอกเรื่องราวได้เกือบทั้งหมด ก่อนที่จะรัน Forecast แม้แต่ครั้งแรก"</p>
+    </div>
+  </section>
+
+  <!-- Applications -->
+  <section>
+    <div class="section-label">การประยุกต์ใช้</div>
+    <h2>ทำไมถึงใช้ได้เกินกว่าแค่อุณหภูมิ</h2>
+    <p>
+      ระเบียบวิธีเดียวกันนี้นำไปใช้ได้กับทุกโดเมนที่มีข้อมูลอนุกรมเวลาแบบ Seasonal กระบวนการทั้งหมด ตั้งแต่การทดสอบ Stationarity, Differencing, เลือกแบบจำลองด้วย Information Criteria ไปจนถึงการประเมินความแม่นยำ สามารถนำไปต่อยอดได้ทันทีในงาน Demand Forecasting, การวางแผนพลังงาน, การวิเคราะห์ยอดขายตามฤดูกาล และการประเมินความเสี่ยงด้านสภาพภูมิอากาศ
+    </p>
+  </section>
+
+  <!-- Skills -->
+  <section>
+    <div class="section-label">เครื่องมือที่ใช้</div>
+    <h2>ทักษะและเทคโนโลยี</h2>
+    <div class="tag-list">
+      <span class="skill-tag">R / RStudio</span>
+      <span class="skill-tag">Excel + Solver</span>
+      <span class="skill-tag">การวิเคราะห์อนุกรมเวลา</span>
+      <span class="skill-tag">SARIMA</span>
+      <span class="skill-tag">Holt-Winters</span>
+      <span class="skill-tag">ACF / PACF</span>
+      <span class="skill-tag">ADF Test</span>
+      <span class="skill-tag">การประเมินแบบจำลอง</span>
+      <span class="skill-tag">Statistical Modeling</span>
+      <span class="skill-tag">Forecasting</span>
+    </div>
+  </section>
+
+  <footer>
+    <span>พยากรณ์อุณหภูมิกรุงเทพมหานคร · การวิเคราะห์อนุกรมเวลา</span>
+    <span>R · RStudio · Excel</span>
+  </footer>
+
+</div>
+</body>
+</html>
