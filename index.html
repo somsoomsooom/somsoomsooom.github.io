@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio — Data Analyst</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #456268;
+    --navy-light: #D0E8F2;
+    --navy-dark: #344a4f;
+    --ink: #2a3a3e;
+    --muted: #444;
+    --faint: #79A3B1;
+    --surface: #e8f4f8;
+    --card: #FCF8EC;
+    --border: rgba(69,98,104,0.15);
+    --border-strong: rgba(69,98,104,0.25);
+    --radius: 12px;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: #FCF8EC; color: #243336; line-height: 1.6; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(252,248,236,0.92); backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+    padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; height: 56px;
+  }
+  .nav-name { font-size: 14px; font-weight: 500; letter-spacing: 0.02em; }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--ink); }
+
+  .container { max-width: 720px; margin: 0 auto; padding: 0 2rem; }
+  .hero { padding: 5rem 0 4rem; }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 11px; font-family: 'DM Mono', monospace;
+    color: var(--navy); background: var(--navy-light);
+    padding: 5px 12px; border-radius: 99px; margin-bottom: 1.5rem; letter-spacing: 0.06em;
+  }
+  .hero-tag span { width: 6px; height: 6px; border-radius: 50%; background: var(--navy); display: inline-block; animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .divider { border: none; border-top: 0.5px solid var(--border); margin: 3.5rem 0; }
+  .section-label { font-size: 11px; font-family: 'DM Mono', monospace; letter-spacing: 0.1em; color: var(--faint); text-transform: uppercase; margin-bottom: 1.5rem; }
+  .exp-item { display: grid; grid-template-columns: 90px 1fr; gap: 1.5rem; padding: 1.5rem 0; border-bottom: 0.5px solid var(--border); }
+  .exp-item:last-child { border-bottom: none; }
+  .exp-date { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--faint); padding-top: 3px; text-align: center; }
+  .exp-role { font-size: 13px; color: #79A3B1; margin-bottom: 8px; font-family: 'DM Mono', monospace; }
+  .exp-desc { font-size: 14px; color: var(--muted); line-height: 1.7; }
+  .exp-project { margin-top: 12px; padding: 12px 14px; background: var(--surface); border-radius: 8px; border-left: 2px solid var(--navy); }
+  .exp-project-title { font-size: 12px; font-weight: 500; color: var(--navy); margin-bottom: 6px; }
+  .exp-project p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .proj-item { padding: 1.5rem 0; border-bottom: 0.5px solid var(--border); }
+  .proj-item:last-child { border-bottom: none; }
+  .proj-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 8px; }
+  .proj-title { font-size: 15px; font-weight: 600; }
+  .proj-badge { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--navy); background: var(--navy-light); padding: 3px 10px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; }
+  .proj-desc { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 10px; }
+  .proj-stack { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--faint); background: var(--surface); border: 0.5px solid var(--border); padding: 3px 9px; border-radius: 99px; }
+  .featured-item { border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.75rem; margin-bottom: 2rem; background: var(--card); }
+  .featured-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.75rem; }
+  .featured-title { font-size: 18px; font-weight: 500; }
+  .featured-badge { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--navy); background: var(--navy-light); padding: 4px 12px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; }
+  .featured-case { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin: 1rem 0; }
+  .case-block { background: var(--surface); border-radius: 8px; padding: 12px 14px; }
+  .case-label { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--faint); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 5px; }
+  .case-text { font-size: 13px; color: var(--ink); line-height: 1.6; }
+  .featured-imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 1rem 0; }
+  .featured-imgs img { width: 100%; border-radius: 6px; border: 0.5px solid var(--border); }
+  @media (max-width: 600px) { .featured-case { grid-template-columns: 1fr; } .featured-imgs { grid-template-columns: 1fr; } }
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 2rem; }
+  .skill-pill { background: var(--surface); border: 0.5px solid var(--border); border-radius: 8px; padding: 10px 14px; }
+  .skill-cat { font-size: 10px; font-family: 'DM Mono', monospace; color: var(--faint); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 5px; }
+  .skill-val { font-size: 13px; color: var(--ink); line-height: 1.5; }
+  .course-list { display: flex; flex-wrap: wrap; gap: 7px; }
+  .edu-block { padding: 1.5rem 0; }
+  .edu-uni { font-size: 15px; font-weight: 500; margin-bottom: 3px; }
+  .edu-degree { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
+  .edu-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .edu-meta-item { font-size: 13px; color: var(--faint); font-family: 'DM Mono', monospace; }
+  .edu-meta-item strong { color: var(--ink); }
+  .hero-grid { display: grid; grid-template-columns: 160px 1fr; gap: 3rem; align-items: center; }
+  .hero-img { width: 160px; height: 160px; border-radius: 50%; object-fit: cover; object-position: top; border: 3px solid var(--navy-light); display: block; flex-shrink: 0; }
+  .hero-right { display: flex; flex-direction: column; gap: 0.25rem; }
+  .hero-name { font-size: clamp(22px, 3vw, 30px); font-weight: 500; letter-spacing: -0.01em; line-height: 1.2; margin-bottom: 4px; }
+  .hero-tagline { font-size: 15px; color: #79A3B1; font-style: italic; font-weight: 300; margin-bottom: 8px; }
+  .hero-desc { font-size: 14px; color: var(--muted); line-height: 1.75; margin-bottom: 1.25rem; }
+  @media (max-width: 600px) { .hero-grid { grid-template-columns: 1fr; text-align: center; } .hero-img { margin: 0 auto; } }
+  .skill-pills-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1rem; }
+  .skill-pill-icon { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 0.5px solid var(--border); border-radius: 99px; padding: 8px 14px; font-size: 13px; color: var(--ink); }
+  .skill-pill-icon img { width: 18px; height: 18px; object-fit: contain; }
+
+  /* ===================== NEW FOOTER ===================== */
+  .site-footer {
+    background: var(--navy-dark);
+    color: #fff;
+    margin-top: 4rem;
+    padding: 2.5rem 0 0;
+  }
+  .footer-inner {
+    max-width: 720px; margin: 0 auto; padding: 0 2rem 2rem;
+    display: flex; align-items: center;
+    gap: 0; flex-wrap: wrap;
+  }
+
+  /* LEFT: contact block */
+  .footer-left {
+    display: flex; flex-direction: column; gap: 10px;
+    flex: 1; min-width: 200px;
+  }
+  .footer-contact { display: flex; flex-direction: column; gap: 8px; }
+  .footer-contact-row {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: rgba(255,255,255,0.8);
+  }
+  .footer-icon-wrap {
+    width: 20px; height: 20px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .footer-icon-wrap img {
+    width: 16px; height: 16px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+  }
+
+  /* VERTICAL DIVIDER */
+  .footer-divider {
+    width: 1px;
+    height: 80px;
+    background: rgba(255,255,255,0.2);
+    margin: 0 2.5rem;
+    flex-shrink: 0;
+  }
+
+  /* RIGHT: connect + icons */
+  .footer-right { display: flex; align-items: center; gap: 16px; }
+  .footer-connect {
+    font-size: 16px; font-weight: 500; color: #fff;
+  }
+  .footer-icons { display: flex; gap: 10px; }
+  .footer-icon-btn {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    border: 0.5px solid rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; text-decoration: none;
+    transition: background 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .footer-icon-btn:hover { background: rgba(255,255,255,0.28); border-color: rgba(255,255,255,0.45); }
+
+  /* COPYRIGHT BAR */
+  .footer-copy {
+    max-width: 720px; margin: 0 auto;
+    padding: 1rem 2rem;
+    border-top: 0.5px solid rgba(255,255,255,0.12);
+    font-size: 12px; color: rgba(255,255,255,0.45); text-align: center;
+  }
+
+  @media (max-width: 600px) {
+    .footer-divider { display: none; }
+    .footer-inner { flex-direction: column; gap: 1.5rem; }
+    .footer-right { display: flex; align-items: center; gap: 16px; }
+    
+  }
+  /* ====================================================== */
+.proj-imgs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.proj-imgs img {
+  width: 100%;
+  border-radius: 8px;
+  border: 0.5px solid var(--border);
+  object-fit: cover;
+}
+
+.proj-link {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 13px;
+  text-decoration: none;
+  color: var(--navy);
+  font-weight: 500;
+  transition: opacity 0.15s ease;
+}
+
+.proj-link:hover {
+  opacity: 0.7;
+}
+.section-label{
+  padding-top:  20px;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+  .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+  @media (max-width: 600px) {
+  .exp-item {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .nav-links {
+    gap: 1rem;
+  }
+
+  .proj-imgs {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-name">Areeya Chanthanapaiboon</span>
+  <div class="nav-links">
+    <a href="#experience">experience</a>
+    <a href="#projects">projects</a>
+    <a href="#skills">skills</a>
+    <a href="#education">education</a>
+  </div>
+</nav>
+
+<div class="container">
+
+  <section class="hero fade-in">
+    <div class="hero-grid">
+      <img src="som.jpg" alt="Areeya Chanthanapaiboon" class="hero-img">
+      <div class="hero-right">
+        <div class="hero-tag"><span></span>available for internship</div>
+        <div class="hero-name">Areeya Chanthanapaiboon</div>
+        <div class="hero-tagline">Turning data into business insights through forecasting, analytics, and visualization</div>
+        <p class="hero-desc">
+          4th-year student in Applied Statistics and Data Analytics, Faculty of Science, KMITL. Passionate about data analysis with hands-on internship experience at Sahaphat. Aspiring to apply data skills in the banking and finance industry.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="experience" class="fade-in">
+    <div class="section-label">experience</div>
+    <div class="exp-item">
+      <div class="exp-date">2026<br>Apr – May</div>
+      <div>
+        <div class="exp-company">Sahapat (บริษัท สหพัฒนพิบูล จำกัด (มหาชน))</div>
+        <div class="exp-role">market analyst intern</div>
+        <div class="exp-desc">Collaborated with developers to translate business requirements into technical logic for automated systems. Conducted Data QA to validate outputs, with focus on complex edge-case scenarios.</div>
+        <div class="exp-project">
+          <div class="exp-project-title">Key Project — Retail Sales Forecasting & Data Pipeline Strategy</div>
+          <p>Led data readiness assessment and designed an automated Data Pipeline using Python & SPSS for a leading supermarket chain. Analyzed 50+ business variables with the marketing team and presented actionable recommendations to senior executives.</p>
+        </div>
+        <div class="exp-project" style="margin-top:8px">
+          <div class="exp-project-title">Market Analysis — Thailand Liquid Detergent Market</div>
+          <p>Analyzed Thailand's liquid detergent market using sales and advertising data across pricing segments to identify the most viable market entry opportunity. Recommended the mid-range segment as the optimal entry point and presented findings to stakeholders.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="projects" class="fade-in">
+
+    <div class="section-label">projects</div>
+    <div class="featured-item">
+      <div class="featured-header">
+        <span class="featured-title">Bangkok Temperature Forecasting</span>
+        <span class="featured-badge">&#11088; featured · MAPE 0.53%</span>
+      </div>
+      <p class="proj-desc">Group project — Contributed as report lead and data analyst. Responsible for data assessment, model selection criteria, and evaluating forecasting accuracy of Bangkok's monthly temperature (2020–2024) between Holt-Winters and SARIMA models.</p>
+      <div class="featured-case">
+        <div class="case-block"><div class="case-label">problem</div><div class="case-text">Identify the most accurate forecasting model for Bangkok's monthly temperature using 5 years of historical data.</div></div>
+        <div class="case-block"><div class="case-label">analysis</div><div class="case-text">Assessed data readiness and defined model selection criteria. Evaluated Holt-Winters vs SARIMA using MAPE and RMSE metrics to determine the optimal model.</div></div>
+        <div class="case-block"><div class="case-label">result</div><div class="case-text">SARIMA(0,1,1)(1,1,0)&#x2081;&#x2082; outperformed Holt-Winters with MAPE of 0.53% vs 1.43%, selected as the optimal forecasting model.</div></div>
+      </div>
+      <div class="featured-imgs">
+        <img src="chart.png" alt="Bangkok Temperature Actual vs Forecast">
+        <img src="table.png" alt="Model Comparison MAPE RMSE">
+      </div>
+      <div class="proj-stack"><span class="tag">R</span><span class="tag">SARIMA</span><span class="tag">Holt-Winters</span><span class="tag">Time Series</span><span class="tag">MAPE/RMSE</span></div>
+      <a href="bangkok-temperature-forecasting.html" target="_blank" class="proj-link">View Case Study → </a>
+
+ <div class="section-label">selected projects</div>
+    <div class="proj-item">
+      <div class="proj-header">
+        <span class="proj-title">Thailand Births & Deaths Dashboard</span>
+        <span class="proj-badge">Power BI</span>
+      </div>
+      <p class="proj-desc">Designed a two-page Power BI dashboard to explore Thailand's birth and death patterns from 2020 to 2024. Analyzed demographic and regional trends using DAX measures and interactive visualizations, uncovering insights such as a national population decline of 7M and cardiovascular disease as the leading cause of death.</p>
+      <div class="proj-imgs">
+        <img src="dashboard1.png" alt="Births & Deaths Trends">
+        <img src="dashboard2.png" alt="Analysis Causes of Deaths">
+      </div>
+      <div class="proj-stack" style="margin-top:10px">
+        <span class="tag">Power BI</span><span class="tag">DAX</span><span class="tag">Data Model</span><span class="tag">Dashboard</span>
+      </div>
+      <a href="https://app.powerbi.com/view?r=eyJrIjoiNjQ0M2U5ZTktZGU5Ny00NzQ1LWEzOGMtOWIwMzk5ODc5MjI1IiwidCI6ImZkMjA2NzE1LTc1MDktNGFlNS05Yjk2LTc2YmI5Nzg4NmE4NCIsImMiOjEwfQ%3D%3D" target="_blank" class="proj-link">View Dashboard →</a>
+    </div>
+
+    <div class="proj-item">
+      <div class="proj-header"><span class="proj-title">Used Car Market Analysis System</span><span class="proj-badge">Web Scraping</span></div>
+      <p class="proj-desc">Built an automated pipeline to extract used car pricing data. Delivered price comparison tools and market trend analysis to support business decision-making.</p>
+      <div class="proj-stack"><span class="tag">Python</span><span class="tag">BeautifulSoup</span><span class="tag">Data Pipeline</span><span class="tag">API</span></div>
+    </div>
+    <div class="proj-item">
+      <div class="proj-header"><span class="proj-title">Online Purchase Behavior Prediction</span><span class="proj-badge">72.16% accuracy</span></div>
+      <p class="proj-desc">Built an SVC classification model to predict student purchasing behavior. Applied results to customer segmentation and targeted marketing strategy.</p>
+      <div class="proj-stack"><span class="tag">Python</span><span class="tag">SVC</span><span class="tag">Scikit-learn</span><span class="tag">ML</span></div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="skills" class="fade-in">
+    <div class="section-label">skills</div>
+    <div class="skill-pills-row">
+      <div class="skill-pill-icon"><img src="python.svg" alt="Python"><span>Python</span></div>
+      <div class="skill-pill-icon"><img src="r.svg" alt="R"><span>R</span></div>
+      <div class="skill-pill-icon"><img src="mysql.svg" alt="SQL"><span>SQL</span></div>
+      <div class="skill-pill-icon"><img src="powerbi.svg" alt="Power BI"><span>Power BI</span></div>
+      <div class="skill-pill-icon"><img src="googlesheets.svg" alt="Google Sheets"><span>Google Sheets</span></div>
+      <div class="skill-pill-icon"><img src="spss.svg" alt="SPSS"><span>SPSS</span></div>
+    </div>
+    <div class="section-label">relevant coursework</div>
+    <div class="course-list">
+      <span class="tag">Actuarial Statistics</span><span class="tag">Risk Analysis</span><span class="tag">Time Series Analysis</span><span class="tag">Data Mining</span><span class="tag">Regression Analysis</span><span class="tag">Probability</span>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="education" class="fade-in">
+    <div class="section-label">education</div>
+    <div class="edu-block">
+      <div class="edu-uni">King Mongkut's Institute of Technology Ladkrabang (KMITL)</div>
+      <div class="edu-degree">Bachelor of Science in Applied Statistics and Data Analytics · Faculty of Science</div>
+      <div class="edu-meta">
+        <div class="edu-meta-item">GPA <strong>3.21</strong></div>
+        <div class="edu-meta-item">Expected <strong>2027</strong></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- NEW FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+
+    <div class="footer-left">
+      <div class="footer-contact">
+        <span class="footer-contact-row">
+          <span class="footer-icon-wrap"><img src="icon-location.png" alt="location"></span>
+          Bangkok, Thailand
+        </span>
+        <span class="footer-contact-row">
+          <span class="footer-icon-wrap"><img src="icon-email.webp" alt="email"></span>
+          areeya0297@gmail.com
+        </span>
+        <span class="footer-contact-row">
+          <span class="footer-icon-wrap"><img src="icon-phone.webp" alt="phone"></span>
+          093-980-0297
+        </span>
+      </div>
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer-right">
+      <p class="footer-connect">Let's connect!</p>
+      <div class="footer-icons">
+        <a href="https://github.com/somsoomsooom" target="_blank" aria-label="GitHub" class="footer-icon-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12"/></svg>
+        </a>
+        <a href="mailto:areeya0297@gmail.com" aria-label="Email" class="footer-icon-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer-copy">&#169; 2026 Areeya Chanthanapaiboon. All rights reserved.</div>
+</footer>
+
+<script>
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
